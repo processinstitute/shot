@@ -9,8 +9,8 @@
 
 <body>
     <div id="video-container">
-        <video id="video" controls width="480px" height="270px">
-            <source src="assets/TearsOfSteel_trim.mp4" type="video/mp4"/>
+        <video id="video" controls width="512px" height="384px">
+            <source src="assets/buster.mp4" type="video/mp4"/>
         </video>
     </div>
     <div id="info-container"></div>
@@ -23,19 +23,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <!-- Import @tensorflow/tfjs-core -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-<!-- wasm -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> -->
 <!--webgl-->
 <!-- Adds the WebGL backend to the global backend registry -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
 <!-- <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script> -->
 <script type="text/javascript">
-    // More API functions here:
-    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-
-    // the link to your model provided by Teachable Machine export panel
-    // const URL = "https://teachablemachine.withgoogle.com/models/gkSAFHTx7/";
-
     let useCanvas = false;
     let model, webcam, labelContainer, maxPredictions, infoContainer;
     let lables = ["Close Up", "Extreme Close Up", "Extreme Wide Shot", "Long Shot", "Medium Close Up", "Medium Shot"];
@@ -81,7 +73,6 @@
             if(useCanvas) {
                 ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
             }
-            // ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 666, 357);
             lastCurrentTime = video.currentTime;
             predict(Math.floor(lastCurrentTime));
         }
@@ -100,10 +91,7 @@
             image = tf.browser.fromPixels(video).resizeNearestNeighbor([224,224]).toFloat().expandDims();
         }
         const modelPrediction = await model.predict(image);
-        // const prediction = await model.predict(image);
-        // console.log(`prediction : ${modelPrediction.dataSync()}`);
         const prediction = modelPrediction.as1D().argMax().dataSync()[0];
-        // console.log(`prediction, lables[prediction] : ${prediction}, ${lables[prediction]}`);
 
         for (let i = 0; i < lables.length; i++) {
             const classPrediction = lables[i] + ": " + (Math.round(modelPrediction.dataSync()[i] * 100) / 100);
